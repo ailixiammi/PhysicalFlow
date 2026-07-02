@@ -1,149 +1,82 @@
-<p align="center">
-    <img alt="goalflow_logo" src="assets/goalflow_logo.png" width="500">
-    <!-- <h1 align="center">A Framework for Vehicle Motion Planning Research</h1> -->
-    <h3 align="center"><a href="https://arxiv.org/abs/2503.05689">Paper</a> | <a href="https://drive.google.com/drive/folders/1iWsPwpqM4WaUVVRZU3xIMPdOaJVB2Kub?usp=drive_link">Weight</a> | <a href="https://zebinx.github.io/HomePage-of-GoalFlow/">ProjectPage</a> </h3>
-</p>
+# PhysicalFlow
 
-<br/>
+This repository is a lightweight fork of the open-source GoalFlow codebase, kept for further research and experimentation. Non-essential paper PDFs and showcase media have been removed from this fork to keep the working tree smaller.
+
+The original authorship, license, citation, acknowledgements, and external project links are preserved below.
+
+Original project links: [Paper](https://arxiv.org/abs/2503.05689) | [Weights](https://drive.google.com/drive/folders/1iWsPwpqM4WaUVVRZU3xIMPdOaJVB2Kub?usp=drive_link) | [Project Page](https://zebinx.github.io/HomePage-of-GoalFlow/)
 
 > [**GoalFlow: Goal-Driven Flow Matching for Multimodal Trajectories Generation
 in End-to-End Autonomous Driving**](https://arxiv.org/abs/2503.05689)  <br>
-> [Zebin Xing](https://github.com/ZebinX)<sup>1,2*</sup>, [Xingyu Zhang]()<sup>2*</sup>, [Yang Hu]()<sup>1,2</sup>, [Bo Jiang]()<sup>4,2</sup>, [Tong He](https://tonghe90.github.io/)<sup>5</sup>, [Qian Zhang]()<sup>2</sup>, [Xiaoxiao Long](https://www.xxlong.site/)<sup>3</sup>, [Wei Yin](https://yvanyin.xyz/)<sup>2✝</sup>  <br>
-> <sup>1</sup> University of Chinese Academy of Sciences, <sup>2</sup> Horizon Robotics, <sup>3</sup> Nanjing University, <sup>4</sup> Huazhong University of Science & Technology, <sup>3</sup> Shanghai AI Laboratory  <br>
-> <br>
-> Computer Vision and Pattern Recognition (CVPR), 2025 <br>
->
-This is the official repo of 'GoalFlow: Goal-Driven Flow Matching for Multimodal Trajectories Generation in End-to-End Autonomous Driving (CVPR 2025)'. GoalFlow achieved PDMS of 90.3, significantly surpassing other baselines. Compared with other diffusion-policy-based methods, our approach requires only a single denoising step to obtain excellent performance.
+> [Zebin Xing](https://github.com/ZebinX)<sup>1,2*</sup>, [Xingyu Zhang]()<sup>2*</sup>, [Yang Hu]()<sup>1,2</sup>, [Bo Jiang]()<sup>4,2</sup>, [Tong He](https://tonghe90.github.io/)<sup>5</sup>, [Qian Zhang]()<sup>2</sup>, [Xiaoxiao Long](https://www.xxlong.site/)<sup>3</sup>, [Wei Yin](https://yvanyin.xyz/)<sup>2</sup>  <br>
+> <sup>1</sup> University of Chinese Academy of Sciences, <sup>2</sup> Horizon Robotics, <sup>3</sup> Nanjing University, <sup>4</sup> Huazhong University of Science & Technology, Shanghai AI Laboratory  <br>
+> Computer Vision and Pattern Recognition (CVPR), 2025
 
-<br/>
+This is a fork of the official repo of "GoalFlow: Goal-Driven Flow Matching for Multimodal Trajectories Generation in End-to-End Autonomous Driving (CVPR 2025)". GoalFlow achieved PDMS of 90.3, significantly surpassing other baselines. Compared with other diffusion-policy-based methods, the approach requires only a single denoising step to obtain strong performance.
+
+## Notes for This Fork
+
+- The local `GoalFlow.pdf` paper copy has been removed. Use the arXiv link above for the paper.
+- README showcase images, GIFs, and goal-point visualization assets have been removed.
+- No tracked checkpoint or model-weight binary was found in this repository at cleanup time.
+- Checkpoints and pretrained weights are still referenced in the original docs and scripts, and should be downloaded to the configured data directory when needed.
 
 ## News
-* **`20 Mar, 2025`:**  We released our paper on [arXiv](https://arxiv.org/abs/2503.05689). Code is coming soon.
-* **`27 Feb, 2025`:**  GoalFlow was accepted at [CVPR](https://cvpr.thecvf.com/Conferences/2025) !
 
-## To Do
-- \[x] Code for goal point construction module 
-- \[x] Goal Point scorer and cluster vocabulary cache
-- \[x] Weights of model
-- \[x] Code for validation
-- \[x] Tutorial for installation
-- \[x] Initial repo & main paper
-
-
-<br/>
+* **`20 Mar, 2025`:** GoalFlow paper released on [arXiv](https://arxiv.org/abs/2503.05689).
+* **`27 Feb, 2025`:** GoalFlow was accepted at [CVPR](https://cvpr.thecvf.com/Conferences/2025).
 
 ## Introduction
-> In autonomous driving, multiple optimal trajectories exist, like overtaking or following. (1) Traditional methods efficiently generate safe trajectories but struggle with multimodal ones. (2) Generative methods like diffusion models capture multimodal distributions but require heavy hardware and prior information. We propose GoalFlow, a goal-point-based method that guides trajectory planning. With a map-free evaluation and an efficient diffusion variant, Flow Matching, we reduce inference steps, achieving superior performance with just one denoising step.
 
-<div align="center">
-<img src="./assets/main_fig.png" />
-</div>
-
-## Visualization
-
-### Comparison with Other Methods
-❌ indicates that the trajectory results in a collision or goes beyond the drivable area, while ✅ represents a safe trajectory. The orange points are optimal goal points evaluated by the Goal Constructor, while the blue and yellow points correspond to samples from the vocabulary.
-<div align="center">
-    <img src="./assets/visualization.png" />
-</div>
-
-### Driving Vedios
-Driving Vedios generated by GoalFlow.
-<table style="width: 100%; table-layout: fixed;">
-    <tr>
-        <td style="width: 50%; text-align: center;">
-            <img src="./assets/cf12097663665430.gif" style="width: 100%; height: auto;">
-        </td>
-        <td style="width: 50%; text-align: center;">
-            <img src="./assets/25b719c231d85e56.gif" style="width: 100%; height: auto;">
-        </td>
-    </tr>
-    <tr>
-        <td style="width: 50%; text-align: center;">
-            <img src="./assets/1a1fbb255ec55813.gif" style="width: 100%; height: auto;">
-        </td>
-        <td style="width: 50%; text-align: center;">
-            <img src="./assets/676880c7e31252c0.gif" style="width: 100%; height: auto;">
-        </td>
-    </tr>
-    <tr>
-        <td style="width: 50%; text-align: center;">
-            <img src="./assets/d2440edd19d954b5.gif" style="width: 100%; height: auto;">
-        </td>
-        <td style="width: 50%; text-align: center;">
-            <img src="./assets/fb0a26a28ec359ce.gif" style="width: 100%; height: auto;">
-        </td>
-    </tr>
-</table>
-
-### Goal Point Distribution
-From top to down, they are respectively the distributions of DAC, distance, and the final score. The points with warmer color have higher score.
-<table style="width: 100%; table-layout: fixed; text-align: center;">
-    <tr>
-        <td><img src="./assets/visual_goal_point/dac_scores/0a44947ca9e85579.png" style="width: 100%; height: auto;"></td>
-        <td><img src="./assets/visual_goal_point/dac_scores/2a06b778a64b545e.png" style="width: 100%; height: auto;"></td>
-        <td><img src="./assets/visual_goal_point/dac_scores/7abf60c1594953cf.png" style="width: 100%; height: auto;"></td>
-        <td><img src="./assets/visual_goal_point/dac_scores/1db7c81f96855ce9.png" style="width: 100%; height: auto;"></td>
-    </tr>
-    <tr>
-        <td><img src="./assets/visual_goal_point/im_scores/0a44947ca9e85579.png" style="width: 100%; height: auto;"></td>
-        <td><img src="./assets/visual_goal_point/im_scores/2a06b778a64b545e.png" style="width: 100%; height: auto;"></td>
-        <td><img src="./assets/visual_goal_point/im_scores/7abf60c1594953cf.png" style="width: 100%; height: auto;"></td>
-        <td><img src="./assets/visual_goal_point/im_scores/1db7c81f96855ce9.png" style="width: 100%; height: auto;"></td>
-    </tr>
-    <tr>
-        <td><img src="./assets/visual_goal_point/final_scores/0a44947ca9e85579.png" style="width: 100%; height: auto;"></td>
-        <td><img src="./assets/visual_goal_point/final_scores/2a06b778a64b545e.png" style="width: 100%; height: auto;"></td>
-        <td><img src="./assets/visual_goal_point/final_scores/7abf60c1594953cf.png" style="width: 100%; height: auto;"></td>
-        <td><img src="./assets/visual_goal_point/final_scores/1db7c81f96855ce9.png" style="width: 100%; height: auto;"></td>
-    </tr>
-</table>
-
+> In autonomous driving, multiple optimal trajectories exist, like overtaking or following. (1) Traditional methods efficiently generate safe trajectories but struggle with multimodal ones. (2) Generative methods like diffusion models capture multimodal distributions but require heavy hardware and prior information. GoalFlow is a goal-point-based method that guides trajectory planning. With a map-free evaluation and an efficient diffusion variant, Flow Matching, it reduces inference steps, achieving strong performance with just one denoising step.
 
 ## Results
+
 Planning results on the proposed **NAVSIM** **Test** benchmark. Please refer to the [paper](https://arxiv.org/abs/2503.05689) for more details.
 
-| Method           | S<sub>NC</sub> ↑ | S<sub>DAC</sub> ↑ | S<sub>TTC</sub> ↑ | S<sub>CF</sub> ↑ | S<sub>EP</sub> ↑ | S<sub>PDM</sub> ↑ |
-|-----------------|-----------------|-----------------|-----------------|-----------------|-----------------|-----------------|
+| Method | S<sub>NC</sub> | S<sub>DAC</sub> | S<sub>TTC</sub> | S<sub>CF</sub> | S<sub>EP</sub> | S<sub>PDM</sub> |
+| --- | --- | --- | --- | --- | --- | --- |
 | Constant Velocity | 68.0 | 57.8 | 50.0 | 100 | 19.4 | 20.6 |
-| Ego Status MLP   | 93.0 | 77.3 | 83.6 | 100 | 62.8 | 65.6 |
-| LTF             | 97.4 | 92.8 | 92.4 | 100 | 79.0 | 83.8 |
-| TransFuser      | 97.7 | 92.8 | 92.8 | 100 | 79.2 | 84.0 |
-| UniAD          | 97.8 | 91.9 | 92.9 | 100 | 78.8 | 83.4 |
-| PARA-Drive     | 97.9 | 92.4 | 93.0 | 99.8 | 79.3 | 84.0 |
-| **GoalFlow (Ours)** | **98.4** | **98.3** | **94.6** | **100** | **85.0** | **90.3** |
-| *Human<sup>‡</sup>* | *100* | *100* | *100* | *99.9* | *87.5* | *94.8* |
+| Ego Status MLP | 93.0 | 77.3 | 83.6 | 100 | 62.8 | 65.6 |
+| LTF | 97.4 | 92.8 | 92.4 | 100 | 79.0 | 83.8 |
+| TransFuser | 97.7 | 92.8 | 92.8 | 100 | 79.2 | 84.0 |
+| UniAD | 97.8 | 91.9 | 92.9 | 100 | 78.8 | 83.4 |
+| PARA-Drive | 97.9 | 92.4 | 93.0 | 99.8 | 79.3 | 84.0 |
+| **GoalFlow** | **98.4** | **98.3** | **94.6** | **100** | **85.0** | **90.3** |
+| *Human* | *100* | *100* | *100* | *99.9* | *87.5* | *94.8* |
 
+## Getting Started
 
-## Getting started
 - [Download Datasets of NAVSIM](https://github.com/autonomousvision/navsim/blob/main/docs/install.md)
 - [Preparation of GoalFlow Environment](docs/install.md)
 - [Evaluation](docs/test.md)
 - [Training](docs/train.md)
 
+The original scripts reference externally downloaded checkpoints and weights, for example:
+
+- `goalflow_traj_epoch_54-step_18260.ckpt`
+- `goalflow_navi_epoch_99-step_132500.ckpt`
+- `depth_pretrained_v99-3jlw0p36-20210423_010520-model_final-remapped.pth`
+
 ## Contact
-If you have any questions or suggestions, please feel free to open an issue or contact us (xzebin@bupt.edu.cn).
+
+For questions about the original GoalFlow project, please open an issue in the upstream project or contact the original authors at xzebin@bupt.edu.cn.
 
 ## Acknowledgement
-<p>1. We have gained valuable insights from <a href="https://arxiv.org/abs/2406.06978" target="_blank">Hydra-MDP</a>, which provided many inspiring ideas referenced in our work.</p>
-<p>2. We referred to an excellent GitHub project, <a href="https://github.com/autonomousvision/tuplan_garage" target="_blank">tuplan garage</a>, and incorporated aspects of its page design.</p>
 
-<p>3. GoalFlow is also greatly inspired by the following outstanding contributions to the open-source community:</p>
-<ul>
-    <a href="https://github.com/autonomousvision/navsim" target="_blank">NAVSIM</a> | <a href="https://github.com/autonomousvision/transfuser" target="_blank">TransFuser</a> | <a href="https://github.com/hustvl/VAD" target="_blank">Diffusion-ES</a> | <a href="" target="_blank">VAD-v2</a>
-</ul>
-
-
+1. The original project gained valuable insights from [Hydra-MDP](https://arxiv.org/abs/2406.06978).
+2. The original project referred to [tuplan garage](https://github.com/autonomousvision/tuplan_garage) and incorporated aspects of its page design.
+3. GoalFlow is also inspired by open-source projects including [NAVSIM](https://github.com/autonomousvision/navsim), [TransFuser](https://github.com/autonomousvision/transfuser), [Diffusion-ES](https://github.com/hustvl/VAD), and VAD-v2.
 
 ## Citation
-If you find GoalFlow useful, please consider giving us a star &#127775; and citing our paper with the following BibTeX entry.
+
+If you find GoalFlow useful, please consider citing the paper with the following BibTeX entry.
 
 ```BibTeX
 @article{xing2025goalflow,
-	  title={GoalFlow: Goal-Driven Flow Matching for Multimodal Trajectories Generation in End-to-End Autonomous Driving},
-	  author={Xing, Zebin and Zhang, Xingyu and Hu, Yang and Jiang, Bo and He, Tong and Zhang, Qian and Long, Xiaoxiao and Yin, Wei},
-	  journal={arXiv preprint arXiv:2503.05689},
-	  year={2025}}
+  title={GoalFlow: Goal-Driven Flow Matching for Multimodal Trajectories Generation in End-to-End Autonomous Driving},
+  author={Xing, Zebin and Zhang, Xingyu and Hu, Yang and Jiang, Bo and He, Tong and Zhang, Qian and Long, Xiaoxiao and Yin, Wei},
+  journal={arXiv preprint arXiv:2503.05689},
+  year={2025}
+}
 ```
-
-<p align="right">(<a href="#top">back to top</a>)</p>
