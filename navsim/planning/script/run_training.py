@@ -2,7 +2,7 @@ from typing import Tuple
 import hydra
 from hydra.utils import instantiate
 import logging
-from omegaconf import DictConfig
+from omegaconf import DictConfig, OmegaConf
 from pathlib import Path
 import pytorch_lightning as pl
 from torch.utils.data import DataLoader
@@ -100,12 +100,14 @@ def main(cfg: DictConfig) -> None:
         logger.info("Using cached data without building SceneLoader")
         assert cfg.force_cache_computation==False, "force_cache_computation must be False when using cached data without building SceneLoader"
         assert cfg.cache_path is not None, "cache_path must be provided when using cached data without building SceneLoader"
+        cache_manifest_path = OmegaConf.select(cfg, "cache_manifest_path")
         train_data = CacheOnlyDataset(
             cache_path=cfg.cache_path,
             feature_builders=agent.get_feature_builders(),
             target_builders=agent.get_target_builders(),
             log_names=cfg.train_logs,
             option_path=cfg.dac_label_path,
+            manifest_path=cache_manifest_path,
         )
         val_data = CacheOnlyDataset(
             cache_path=cfg.cache_path,
@@ -113,6 +115,7 @@ def main(cfg: DictConfig) -> None:
             target_builders=agent.get_target_builders(),
             log_names=cfg.val_logs,
             option_path=cfg.dac_label_path,
+            manifest_path=cache_manifest_path,
         )
     else:
         logger.info("Building SceneLoader")

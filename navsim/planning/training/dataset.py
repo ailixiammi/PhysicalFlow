@@ -1,6 +1,7 @@
 import gzip
 import os
 import time
+import traceback
 from pathlib import Path
 import numpy as np
 
@@ -60,6 +61,7 @@ class CacheOnlyDataset(torch.utils.data.Dataset):
         target_builders: List[AbstractTargetBuilder],
         log_names: List[str] = None,
         option_path: str = None,
+        manifest_path: str = None,
     ):
         super().__init__()
         assert Path(cache_path).is_dir(), f"Cache path {cache_path} does not exist!"
@@ -72,12 +74,19 @@ class CacheOnlyDataset(torch.utils.data.Dataset):
 
         self._feature_builders = feature_builders
         self._target_builders = target_builders
-        self._valid_cache_paths: Dict[str, Path] = self._load_valid_caches(
-            cache_path=self._cache_path,
-            feature_builders=self._feature_builders,
-            target_builders=self._target_builders,
-            log_names=self.log_names,
-        )
+        if manifest_path:
+            self._valid_cache_paths = self._load_valid_caches_from_manifest(
+                cache_path=self._cache_path,
+                manifest_path=Path(manifest_path),
+                log_names=self.log_names,
+            )
+        else:
+            self._valid_cache_paths: Dict[str, Path] = self._load_valid_caches(
+                cache_path=self._cache_path,
+                feature_builders=self._feature_builders,
+                target_builders=self._target_builders,
+                log_names=self.log_names,
+            )
         self.tokens = list(self._valid_cache_paths.keys())
         self.option_path=option_path
 
@@ -106,6 +115,32 @@ class CacheOnlyDataset(torch.utils.data.Dataset):
                     found_caches.append(data_dict_path.is_file())
                 if all(found_caches):
                     valid_cache_paths[token_path.name] = token_path
+
+        return valid_cache_paths
+
+    @staticmethod
+    def _load_valid_caches_from_manifest(
+        cache_path: Path,
+        manifest_path: Path,
+        log_names: List[Path],
+    ) -> Dict[str, Path]:
+        assert manifest_path.is_file(), f"Cache manifest {manifest_path} does not exist!"
+
+        allowed_logs = {Path(log_name).name for log_name in log_names} if log_names is not None else None
+        valid_cache_paths: Dict[str, Path] = {}
+
+        with open(manifest_path, "r", encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if not line or line.startswith("#"):
+                    continue
+                parts = line.split("\t")
+                if len(parts) != 2:
+                    raise ValueError(f"Invalid cache manifest line: {line}")
+                log_name, token = parts
+                if allowed_logs is not None and log_name not in allowed_logs:
+                    continue
+                valid_cache_paths[token] = cache_path / log_name / token
 
         return valid_cache_paths
 
@@ -170,7 +205,11 @@ class Dataset(torch.utils.data.Dataset):
 
         if (cache_path is not None) and cache_path.is_dir():
             for log_path in cache_path.iterdir():
+                if not log_path.is_dir():
+                    continue
                 for token_path in log_path.iterdir():
+                    if not token_path.is_dir():
+                        continue
                     found_caches: List[bool] = []
                     for builder in feature_builders + target_builders:
                         data_dict_path = token_path / (builder.get_unique_name() + ".gz")
@@ -242,7 +281,20 @@ class Dataset(torch.utils.data.Dataset):
             )
 
         for token in tqdm(tokens_to_cache, desc="Caching Dataset"):
-            self._cache_scene_with_token(token)
+            try:
+                self._cache_scene_with_token(token)
+            except FileNotFoundError as exc:
+                if os.environ.get("GOALFLOW_SKIP_CACHE_FILE_NOT_FOUND", "0") != "1":
+                    raise
+                skip_log = os.environ.get("GOALFLOW_CACHE_SKIP_LOG")
+                message = f"{token}\t{exc}\n"
+                if skip_log:
+                    Path(skip_log).parent.mkdir(parents=True, exist_ok=True)
+                    with open(skip_log, "a", encoding="utf-8") as f:
+                        f.write(message)
+                        f.write(traceback.format_exc())
+                        f.write("\n")
+                logger.warning("Skipping token %s due to missing file: %s", token, exc)
 
     def __len__(self):
         return len(self._scene_loader)
