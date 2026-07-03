@@ -51,9 +51,7 @@ class GoalFlowCallback(pl.Callback):
                 dict_to_device(predictions, "cpu"),
             )
             grid = self._visualize_model(features, targets, predictions)
-            trainer.logger.experiment.add_image(
-                f"val_plot_{idx_plot}", grid, global_step=trainer.current_epoch
-            )
+            self._log_image(trainer, f"val_plot_{idx_plot}", grid)
 
     def on_test_epoch_start(
         self, trainer: pl.Trainer, lightning_module: pl.LightningModule
@@ -87,9 +85,13 @@ class GoalFlowCallback(pl.Callback):
                 dict_to_device(predictions, "cpu"),
             )
             grid = self._visualize_model(features, targets, predictions)
-            trainer.logger.experiment.add_image(
-                f"train_plot_{idx_plot}", grid, global_step=trainer.current_epoch
-            )
+            self._log_image(trainer, f"train_plot_{idx_plot}", grid)
+
+    def _log_image(self, trainer: pl.Trainer, tag: str, image: torch.Tensor) -> None:
+        experiment = getattr(getattr(trainer, "logger", None), "experiment", None)
+        add_image = getattr(experiment, "add_image", None)
+        if callable(add_image):
+            add_image(tag, image, global_step=trainer.current_epoch)
 
     def _visualize_model(
         self,
@@ -114,7 +116,8 @@ class GoalFlowCallback(pl.Callback):
         pred_trajectory = predictions["trajectory"].numpy()
 
         plots = []
-        for sample_idx in range(self._num_rows * self._num_columns):
+        num_samples = min(camera.shape[0], self._num_rows * self._num_columns)
+        for sample_idx in range(num_samples):
             plot = np.zeros((256, 768, 3), dtype=np.uint8)
             plot[:128, :512] = (camera[sample_idx] * 255).astype(np.uint8)[::2, ::2]
 
